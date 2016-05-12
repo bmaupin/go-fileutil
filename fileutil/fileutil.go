@@ -11,7 +11,8 @@ import (
 	"path/filepath"
 )
 
-// Returned by UnzipFile if the destination path is not a directory
+// ErrDestNotDir is returned by UnzipFile if the destination path is not a
+// directory
 var ErrDestNotDir = errors.New("destination is not a directory")
 
 // CopyFile copies a file from the provided source to the destination
