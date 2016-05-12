@@ -1,5 +1,5 @@
 /*
-Various utility functions for working with files.
+Package fileutil provides various utility functions for working with files.
 */
 package fileutil
 
@@ -11,9 +11,10 @@ import (
 	"path/filepath"
 )
 
+// Returned by UnzipFile if the destination path is not a directory
 var ErrDestNotDir = errors.New("destination is not a directory")
 
-// Copy a file from the provided source to the destination
+// CopyFile copies a file from the provided source to the destination
 func CopyFile(sourceFilePath string, destFilePath string) error {
 	r, err := os.Open(sourceFilePath)
 	if err != nil {
@@ -43,7 +44,7 @@ func CopyFile(sourceFilePath string, destFilePath string) error {
 	return nil
 }
 
-// Unzip a file located at sourceFilePath to the provided destination directory
+// UnzipFile unzips a file located at sourceFilePath to the provided destination directory
 func UnzipFile(sourceFilePath string, destDirPath string) error {
 	// First, make sure the destination exists and is a directory
 	info, err := os.Stat(destDirPath)
@@ -55,6 +56,9 @@ func UnzipFile(sourceFilePath string, destDirPath string) error {
 	}
 
 	r, err := zip.OpenReader(sourceFilePath)
+	if err != nil {
+		return err
+	}
 	defer func() {
 		if err := r.Close(); err != nil {
 			panic(err)
@@ -100,7 +104,7 @@ func UnzipFile(sourceFilePath string, destDirPath string) error {
 	return nil
 }
 
-// Zip a directory located at sourceDirPath to the provided destination file
+// ZipDir zips a directory located at sourceDirPath to the provided destination file
 func ZipDir(sourceDirPath string, destFilePath string) error {
 	f, err := os.Create(destFilePath)
 	if err != nil {
@@ -166,7 +170,7 @@ func ZipDir(sourceDirPath string, destFilePath string) error {
 	return err
 }
 
-// Zip the provided source file to the destination file
+// ZipFile zips the provided source file to the destination file
 func ZipFile(sourceFilePath string, destFilePath string) error {
 	r, err := os.Open(sourceFilePath)
 	if err != nil {
